@@ -1,0 +1,8 @@
+body {
+  font-family: 'Stint Ultra Condensed', cursive;
+  position: relative;
+  background-color: #B0A1BA;
+  display: grid;
+  justify-items: center;
+  width: 100%;
+}

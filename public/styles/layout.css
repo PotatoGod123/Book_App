@@ -1,6 +1,6 @@
 @media only screen and (max-width: 600px) {
   #header {
-      font-size: 26px;
+      font-size: 50px;
       background-color: #84AEAD;
       -webkit-text-stroke-width: 1px;
       -webkit-text-stroke-color: #55455F;
@@ -13,7 +13,7 @@
   }
 
   #subheader {
-      font-size: 20px;
+      font-size: 45px;
       background-color: #ABC8C7;
       -webkit-text-stroke-width: 1px;
       -webkit-text-stroke-color: #55455F;
@@ -38,7 +38,7 @@
   }
 
   #title, #author {
-      font-size: 20px;
+      font-size: 70px;
       background-color: #84AEAD;
       color: #55455F;
       outline: solid .5px #55455F;
@@ -48,6 +48,7 @@
       height: 80px;
       line-height: 80px;
       padding-left: 10px;
+      text-align: center;
   }
 
   button {

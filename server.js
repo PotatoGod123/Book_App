@@ -60,11 +60,14 @@ function bookSearch(request, response) {
     .query(queryParams)
     .then(results => {
       let returned = results.body.items;
+      console.log(returned);
       let arr = returned.map((bookResults) => {
         return new Book(bookResults);
       });
-    response.status(200).render('pages/searches/show', { results: arr});
-  });
+      response.status(200).render('pages/searches/show', { results: arr});
+    }).catch(error=>{
+      console.log(error);
+    });
 }
 
 // error handler
@@ -75,7 +78,7 @@ function errorHandler(request, response) {
 // constructor function
 // properties needed: image, title name, author name, book description (under volumeInfo)
 function Book(obj) {
-  this.image = obj.volumeInfo.imageLinks.thumbnail ? obj.volumeInfo.imageLinks.thumbnail : `https://i.imgur.com/J5LVHEL.jpg`;
+  this.image = obj.volumeInfo.imageLinks ? obj.volumeInfo.imageLinks.thumbnail : `https://i.imgur.com/J5LVHEL.jpg`;
   this.title = obj.volumeInfo.title ? obj.volumeInfo.title : 'Title not available';
   this.author = obj.volumeInfo.authors ? obj.volumeInfo.authors : 'Author(s) not available';
   this.description = obj.volumeInfo.description ? obj.volumeInfo.description : 'Description not available';

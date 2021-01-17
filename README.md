@@ -1,7 +1,7 @@
 # Book APP
 
-**Author**: Cristian Robles
-**Version**: 1.0.0 <!--(increment the patch/fix version number if you make more commits past your first submission)-->
+**Author**: Cristian Robles, Cody Carpenter
+**Version**: 1.1.0 <!--(increment the patch/fix version number if you make more commits past your first submission)-->
 
 
 ## Overview
@@ -23,5 +23,9 @@ Libraries: Express, superagent, postgress, CORS, dotenv
 
 ## Credits and Collaborations
 <!-- Give credit (and a link) to other people or resources that helped you build this application. -->
+
+
+1/16/2021 10:10pm VER: 1.1.0- Added new routes that will render to the web browser all from server side, Using ejs files with pre typed HTML. When a user goes to search, they will be given a form to fill out then be redirected to another route with their data gotten from search query put inside an API call and tailored to be displayed on the ejs file.
+
 
 1/16/2021 8:40pm VER: 1.0.0- Inital set up of repository directory and all neccasery files that will be needed.

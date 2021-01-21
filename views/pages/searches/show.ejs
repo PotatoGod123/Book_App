@@ -8,16 +8,18 @@
     <link rel="stylesheet" href="/styles/module.css">
 </head>
 <body>
-    <h1>Best Books!</h1>
+    <%- include('../../layout/header') %>
     <h2 id="subheader">Search Results</h2>
     <form action="/searches/show" method="POST">
     <main>
         <% results.forEach(book => { %>
-            <img src="<%= book.image %>">
-            <h2 id="title"><%= book.title %></h2>
-            <h3><%= book.author %></h3>
             <div>
-                <p><%= book.description %></p>
+                <img src="<%= book.image %>">
+                <h4 id="title"><%= book.title %></h4>
+                <h5><%= book.author %></h5>
+                <div>
+                    <p><%= book.description %></p>
+                </div>
             </div>
       <% }) %>
     </main>

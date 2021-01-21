@@ -10,8 +10,34 @@
     <link rel="stylesheet" href="./styles/module.css"/>
 </head>
 <body>
-    <h2><a href="/searches/new">Hello World</a></h2>
-    <p>This is the test page. Move along. Nothing to see here.</p>
+    <header>
+        <div id='Header'>
+            <h1>
+                BEST BOOKS!
+            </h1>
+            <div>
+                <nav>
+                    <a href="/">Home</a>
+                    <a href="/searches/new">Search the google API</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div id="bookshelf">
+            <h2><%=books.rowCount %> SAVED BOOKS</h2>
+            <% books.rows.forEach(val=>{ %>
+            <div>
+                <h4><%= val.title%></h4>
+                <p><%= val.author%></p>
+                <div id="buttonHolder">
+                    <a href="/books/<%=val.id%>"><button >View More</button></a>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </main>
+    <footer></footer>
 </body>
 </html>
 

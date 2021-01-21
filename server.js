@@ -4,6 +4,8 @@
 const express = require('express');
 const superagent = require('superagent');
 const cors = require('cors');
+const pg = require('pg');
+
 
 // configure env file to allow variables to be listened to
 require('dotenv').config();
@@ -13,10 +15,15 @@ const PORT = process.env.PORT || 3000;
 
 // start express application
 const app = express();
-
+const client = new pg.Client(process.env.DATABASE_URL);
 // CORS
+client.connect();
+
 app.use(cors());
 
+client.on('error', err => {
+  console.error(err);
+});
 // where the server will look for pages to serve the browser
 app.use(express.static('./public'));
 
@@ -30,11 +37,19 @@ app.set('view engine', 'ejs');
 app.get('/', home);
 app.get('/searches/new', newSearch);
 app.post('/searches', bookSearch);
+app.post('/books/id:')
 app.get('/error', errorHandler);
 
 // Handlers
 function home(request, response) {
-  response.status(200).render('pages/index');
+  let SQL = 'SELECT * FROM books';
+
+  client.query(SQL)
+    .then(results => {
+      console.log(results);
+      response.status(200).render('pages/index',{'books':results});
+    });
+
 }
 
 function newSearch(request, response) {
@@ -64,8 +79,8 @@ function bookSearch(request, response) {
       let arr = returned.map((bookResults) => {
         return new Book(bookResults);
       });
-      response.status(200).render('pages/searches/show', { results: arr});
-    }).catch(error=>{
+      response.status(200).render('pages/searches/show', { results: arr });
+    }).catch(error => {
       console.log(error);
     });
 }
@@ -85,6 +100,7 @@ function Book(obj) {
 }
 
 
-app.listen(PORT,()=>{
+app.listen(PORT, () => {
   console.log(`hi you are on port ${PORT}`);
+  console.log(`hello you are connect to database>> ${client.connectionParameters.database}`);
 });

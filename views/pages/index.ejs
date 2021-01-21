@@ -1,27 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="./styles/reset.css"/>
-    <link rel="stylesheet" href="./styles/base.css"/>
-    <link rel="stylesheet" href="./styles/layout.css"/>
-    <link rel="stylesheet" href="./styles/module.css"/>
+    <title>Home</title>
+    <%- include('../layout/head') %>
 </head>
 <body>
     <header>
-        <div id='Header'>
-            <h1>
-                BEST BOOKS!
-            </h1>
-            <div>
-                <nav>
-                    <a href="/">Home</a>
-                    <a href="/searches/new">Search the google API</a>
-                </nav>
-            </div>
-        </div>
+        <%- include('../layout/header') %>
     </header>
     <main>
         <div id="bookshelf">
@@ -29,7 +14,7 @@
             <% books.rows.forEach(val=>{ %>
             <div>
                 <h4><%= val.title%></h4>
-                <p><%= val.author%></p>
+                <h5><%= val.author%></h5>
                 <div id="buttonHolder">
                     <a href="/books/<%=val.id%>"><button >View More</button></a>
                 </div>

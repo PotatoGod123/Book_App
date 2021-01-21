@@ -37,7 +37,7 @@ app.set('view engine', 'ejs');
 app.get('/', home);
 app.get('/searches/new', newSearch);
 app.post('/searches', bookSearch);
-app.post('/books/id:')
+app.get('/books/:id',viewDetails);
 app.get('/error', errorHandler);
 
 // Handlers
@@ -75,7 +75,7 @@ function bookSearch(request, response) {
     .query(queryParams)
     .then(results => {
       let returned = results.body.items;
-      console.log(returned);
+      console.log(returned[4].volumeInfo.categories);
       let arr = returned.map((bookResults) => {
         return new Book(bookResults);
       });
@@ -85,6 +85,16 @@ function bookSearch(request, response) {
     });
 }
 
+function viewDetails(request,response){
+  let SQL= 'SELECT * FROM books WHERE id=$1';
+
+  const safeParam=[request.params.id];
+  
+  client.query(SQL,safeParam)
+    .then(results=>{
+      response.status(200).render('pages/books/show',{book : results.rows[0]});
+    });
+}
 // error handler
 function errorHandler(request, response) {
   response.status(500).render('pages/error');
@@ -97,6 +107,8 @@ function Book(obj) {
   this.title = obj.volumeInfo.title ? obj.volumeInfo.title : 'Title not available';
   this.author = obj.volumeInfo.authors ? obj.volumeInfo.authors : 'Author(s) not available';
   this.description = obj.volumeInfo.description ? obj.volumeInfo.description : 'Description not available';
+  this.isbn = obj.volumeInfo.industryIdentifiers ? obj.volumeInfo.industryIdentifiers[0].identifier: 'N/A' ;
+  this.bookshelf = obj.volumeInfo.categories ? obj.volumeInfo.categories[0] : 'No Categories';
 }
 
 

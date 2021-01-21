@@ -10,8 +10,9 @@
 <body>
     <%- include('../../layout/header') %>
     <h2 id="subheader">Search Results</h2>
-    <form action="/searches/show" method="POST">
+
     <main>
+        
         <% results.forEach(book => { %>
             <div>
                 <img src="<%= book.image %>">
@@ -21,8 +22,23 @@
                     <p><%= book.description %></p>
                 </div>
             </div>
+            <form action="/books/add" method="POST">
+                <fieldset>
+                <div class="addButtonContainer">
+                    
+                    <input type="hidden" name="title" value="<%= book.title %>"/>
+                    <input type="hidden" name="author" value="<%= book.author %>"/>
+                    <input type="hidden" name="description" value="<%= book.description %>"/>
+                    <input type="hidden" name="isbn" value="<%= book.isbn %>"/>
+                    <input type="hidden" name="image" value="<%= book.image %>"/>
+                    <input type="hidden" name="bookshelf" value="<%= book.bookshelf %>"/>
+                    <button type="submit">Save Book</button>
+                    
+                </div>
+            </fieldset>
+        </form>
       <% }) %>
     </main>
-    </form>
+
 </body>
 </html>

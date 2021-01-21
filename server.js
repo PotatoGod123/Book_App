@@ -37,7 +37,8 @@ app.set('view engine', 'ejs');
 app.get('/', home);
 app.get('/searches/new', newSearch);
 app.post('/searches', bookSearch);
-app.get('/books/:id',viewDetails);
+app.get('/books/:id', viewDetails);
+app.post('/books/add', addBooktoData);
 app.get('/error', errorHandler);
 
 // Handlers
@@ -46,14 +47,25 @@ function home(request, response) {
 
   client.query(SQL)
     .then(results => {
-      console.log(results);
-      response.status(200).render('pages/index',{'books':results});
+      response.status(200).render('pages/index', { 'books': results });
     });
 
 }
 
 function newSearch(request, response) {
   response.status(200).render('pages/searches/new');
+}
+
+function addBooktoData(request, response) {
+  const obj = request.body;
+
+  let SQL = 'INSERT INTO books (title,author,description,isbn,image,bookshelf) VALUES ($1,$2,$3,$4,$5,$6)';
+
+  const safeVal = [obj.title, obj.author, obj.description, obj.isbn, obj.image, obj.bookshelf];
+  client.query(SQL, safeVal)
+    .then(() => {
+      response.status(200).render('pages/books/show',{book:obj});
+    });
 }
 
 function bookSearch(request, response) {
@@ -85,14 +97,16 @@ function bookSearch(request, response) {
     });
 }
 
-function viewDetails(request,response){
-  let SQL= 'SELECT * FROM books WHERE id=$1';
+function viewDetails(request, response) {
+  let SQL = 'SELECT * FROM books WHERE id=$1';
 
-  const safeParam=[request.params.id];
-  
-  client.query(SQL,safeParam)
-    .then(results=>{
-      response.status(200).render('pages/books/show',{book : results.rows[0]});
+  const safeParam = [request.params.id];
+
+
+
+  client.query(SQL, safeParam)
+    .then(results => {
+      response.status(200).render('pages/books/show', { book: results.rows[0] });
     });
 }
 // error handler
@@ -107,7 +121,7 @@ function Book(obj) {
   this.title = obj.volumeInfo.title ? obj.volumeInfo.title : 'Title not available';
   this.author = obj.volumeInfo.authors ? obj.volumeInfo.authors : 'Author(s) not available';
   this.description = obj.volumeInfo.description ? obj.volumeInfo.description : 'Description not available';
-  this.isbn = obj.volumeInfo.industryIdentifiers ? obj.volumeInfo.industryIdentifiers[0].identifier: 'N/A' ;
+  this.isbn = obj.volumeInfo.industryIdentifiers ? obj.volumeInfo.industryIdentifiers[0].identifier : 'N/A';
   this.bookshelf = obj.volumeInfo.categories ? obj.volumeInfo.categories[0] : 'No Categories';
 }
 

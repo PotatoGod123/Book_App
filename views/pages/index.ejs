@@ -13,6 +13,7 @@
             <h2><%=books.rowCount %> SAVED BOOKS</h2>
             <% books.rows.forEach(val=>{ %>
             <div>
+                <img src="<%= val.image %>">
                 <h4><%= val.title%></h4>
                 <h5><%= val.author%></h5>
                 <div id="buttonHolder">

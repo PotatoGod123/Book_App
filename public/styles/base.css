@@ -1,8 +1,11 @@
+*{
+  box-sizing: border-box;
+}
 body {
   font-family: 'Stint Ultra Condensed', cursive;
   position: relative;
-  background-color: #B0A1BA;
+  background-color: lightgrey;
   display: grid;
   justify-items: center;
-  width: 100%;
+  width: auto;
 }

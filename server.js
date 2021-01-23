@@ -4,6 +4,8 @@
 const express = require('express');
 const superagent = require('superagent');
 const cors = require('cors');
+const pg = require('pg');
+
 
 // configure env file to allow variables to be listened to
 require('dotenv').config();
@@ -13,10 +15,15 @@ const PORT = process.env.PORT || 3000;
 
 // start express application
 const app = express();
-
+const client = new pg.Client(process.env.DATABASE_URL);
 // CORS
+client.connect();
+
 app.use(cors());
 
+client.on('error', err => {
+  console.error(err);
+});
 // where the server will look for pages to serve the browser
 app.use(express.static('./public'));
 
@@ -30,15 +37,35 @@ app.set('view engine', 'ejs');
 app.get('/', home);
 app.get('/searches/new', newSearch);
 app.post('/searches', bookSearch);
+app.get('/books/:id', viewDetails);
+app.post('/books/add', addBooktoData);
 app.get('/error', errorHandler);
 
 // Handlers
 function home(request, response) {
-  response.status(200).render('pages/index');
+  let SQL = 'SELECT * FROM books';
+
+  client.query(SQL)
+    .then(results => {
+      response.status(200).render('pages/index', { 'books': results });
+    });
+
 }
 
 function newSearch(request, response) {
   response.status(200).render('pages/searches/new');
+}
+
+function addBooktoData(request, response) {
+  const obj = request.body;
+
+  let SQL = 'INSERT INTO books (title,author,description,isbn,image,bookshelf) VALUES ($1,$2,$3,$4,$5,$6)';
+
+  const safeVal = [obj.title, obj.author, obj.description, obj.isbn, obj.image, obj.bookshelf];
+  client.query(SQL, safeVal)
+    .then(() => {
+      response.status(200).render('pages/books/show',{book:obj});
+    });
 }
 
 function bookSearch(request, response) {
@@ -60,16 +87,28 @@ function bookSearch(request, response) {
     .query(queryParams)
     .then(results => {
       let returned = results.body.items;
-      console.log(returned);
+      console.log(returned[4].volumeInfo.categories);
       let arr = returned.map((bookResults) => {
         return new Book(bookResults);
       });
-      response.status(200).render('pages/searches/show', { results: arr});
-    }).catch(error=>{
+      response.status(200).render('pages/searches/show', { results: arr });
+    }).catch(error => {
       console.log(error);
     });
 }
 
+function viewDetails(request, response) {
+  let SQL = 'SELECT * FROM books WHERE id=$1';
+
+  const safeParam = [request.params.id];
+
+
+
+  client.query(SQL, safeParam)
+    .then(results => {
+      response.status(200).render('pages/books/show', { book: results.rows[0] });
+    });
+}
 // error handler
 function errorHandler(request, response) {
   response.status(500).render('pages/error');
@@ -82,9 +121,12 @@ function Book(obj) {
   this.title = obj.volumeInfo.title ? obj.volumeInfo.title : 'Title not available';
   this.author = obj.volumeInfo.authors ? obj.volumeInfo.authors : 'Author(s) not available';
   this.description = obj.volumeInfo.description ? obj.volumeInfo.description : 'Description not available';
+  this.isbn = obj.volumeInfo.industryIdentifiers ? obj.volumeInfo.industryIdentifiers[0].identifier : 'N/A';
+  this.bookshelf = obj.volumeInfo.categories ? obj.volumeInfo.categories[0] : 'No Categories';
 }
 
 
-app.listen(PORT,()=>{
+app.listen(PORT, () => {
   console.log(`hi you are on port ${PORT}`);
+  console.log(`hello you are connect to database>> ${client.connectionParameters.database}`);
 });

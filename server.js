@@ -5,6 +5,7 @@ const express = require('express');
 const superagent = require('superagent');
 const cors = require('cors');
 const pg = require('pg');
+const methodOverride = require('method-override');
 
 
 // configure env file to allow variables to be listened to
@@ -24,13 +25,14 @@ app.use(cors());
 client.on('error', err => {
   console.error(err);
 });
-// where the server will look for pages to serve the browser
+// just files to always send to user, the css in this case
 app.use(express.static('./public'));
 
 // decode our POST data
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));// allows two more actions on forms, PUT and DELETE method
 
-// set default view engine and what we're using to view (ejs)
+//where the server will look for pages to serve the browser, set default view engine and what we're using to view (ejs)
 app.set('view engine', 'ejs');
 
 // routes

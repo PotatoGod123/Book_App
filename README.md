@@ -1,7 +1,7 @@
 # Book APP
 
 **Author**: Cristian Robles, Cody Carpenter
-**Version**: 1.2.0 <!--(increment the patch/fix version number if you make more commits past your first submission)-->
+**Version**: 1.3.0 <!--(increment the patch/fix version number if you make more commits past your first submission)-->
 
 
 ## Overview
@@ -24,6 +24,8 @@ Application: Heroku
 
 ## Credits and Collaborations
 <!-- Give credit (and a link) to other people or resources that helped you build this application. -->
+
+1/26/2021 01:20am VER: 1.3.0- Updated some more css and got rid of the old ugly one, Also added extra feature with the user now being able to update the details of any of there saved books and outright delete from their bookshelf. Also added a hamburger nav working with only css and html.
 
 1/22/2021 12:30am VER: 1.2.0- Rehauled visuals of css in mobile view. Added a databse and functionality of web app to now be able to save books from your search results be added to your bookself on the homepage. From there you are able to see the details of said book. All done with an SQL databse. 
 

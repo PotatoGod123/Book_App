@@ -10,7 +10,18 @@
         </header>
         <main>
             <%- include('detail.ejs') %>
+            <%- include('edit.ejs') %>
         </main>
         <footer></footer>
+        <script>
+            let updateForm= document.getElementById('updateForm');
+            updateForm.addEventListener("click",showFormHandler);
+            function showFormHandler(e){
+                console.log(e);
+                let form= document.getElementById('hiddenForm');
+                form.className="show";
+                
+            }
+        </script>
     </body>
 </html>

@@ -5,6 +5,7 @@ const express = require('express');
 const superagent = require('superagent');
 const cors = require('cors');
 const pg = require('pg');
+const methodOverride = require('method-override');
 
 
 // configure env file to allow variables to be listened to
@@ -24,13 +25,14 @@ app.use(cors());
 client.on('error', err => {
   console.error(err);
 });
-// where the server will look for pages to serve the browser
+// just files to always send to user, the css in this case
 app.use(express.static('./public'));
 
 // decode our POST data
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));// allows two more actions on forms, PUT and DELETE method
 
-// set default view engine and what we're using to view (ejs)
+//where the server will look for pages to serve the browser, set default view engine and what we're using to view (ejs)
 app.set('view engine', 'ejs');
 
 // routes
@@ -39,6 +41,8 @@ app.get('/searches/new', newSearch);
 app.post('/searches', bookSearch);
 app.get('/books/:id', viewDetails);
 app.post('/books/add', addBooktoData);
+app.put('/update/:id', updateBook);
+app.delete('/delete/:id', deleteBook);
 app.get('/error', errorHandler);
 
 // Handlers
@@ -48,6 +52,33 @@ function home(request, response) {
   client.query(SQL)
     .then(results => {
       response.status(200).render('pages/index', { 'books': results });
+    });
+
+}
+
+function deleteBook(request, response) {
+  const SQL = 'DELETE FROM books WHERE id = $1';
+
+  const safeVal = [request.params.id];
+  client.query(SQL, safeVal)
+    .then(data => {
+      console.log(data.rowCount);
+      response.status(200).redirect('/');
+    });
+}
+
+function updateBook(request, response) {
+  const SQL = 'UPDATE books SET title=$1, author=$2, description=$3, isbn=$4, image=$5, bookshelf=$6 WHERE id=$7';
+
+  const body = request.body;
+  const safeValues = [body.title, body.author, body.description, body.isbn, body.image, body.bookshelf, request.params.id];
+
+  client.query(SQL, safeValues)
+    .then(data => {
+      console.log(data.rowCount);
+      viewDetails(request, response);
+    }).catch(err => {
+      console.error(err);
     });
 
 }
@@ -64,7 +95,7 @@ function addBooktoData(request, response) {
   const safeVal = [obj.title, obj.author, obj.description, obj.isbn, obj.image, obj.bookshelf];
   client.query(SQL, safeVal)
     .then(() => {
-      response.status(200).render('pages/books/show',{book:obj});
+      response.status(200).render('pages/books/show', { book: obj, flag:'details' });
     });
 }
 
@@ -87,11 +118,10 @@ function bookSearch(request, response) {
     .query(queryParams)
     .then(results => {
       let returned = results.body.items;
-      console.log(returned[4].volumeInfo.categories);
       let arr = returned.map((bookResults) => {
         return new Book(bookResults);
       });
-      response.status(200).render('pages/searches/show', { results: arr });
+      response.status(200).render('pages/searches/show', { results: arr, flag: 'search' });
     }).catch(error => {
       console.log(error);
     });
@@ -106,7 +136,7 @@ function viewDetails(request, response) {
 
   client.query(SQL, safeParam)
     .then(results => {
-      response.status(200).render('pages/books/show', { book: results.rows[0] });
+      response.status(200).render('pages/books/show', { book: results.rows[0], flag: 'details' });
     });
 }
 // error handler

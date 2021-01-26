@@ -56,12 +56,12 @@ function home(request, response) {
 
 }
 
-function deleteBook(request,response){
+function deleteBook(request, response) {
   const SQL = 'DELETE FROM books WHERE id = $1';
 
   const safeVal = [request.params.id];
-  client.query(SQL,safeVal)
-    .then(data=>{
+  client.query(SQL, safeVal)
+    .then(data => {
       console.log(data.rowCount);
       response.status(200).redirect('/');
     });
@@ -73,11 +73,11 @@ function updateBook(request, response) {
   const body = request.body;
   const safeValues = [body.title, body.author, body.description, body.isbn, body.image, body.bookshelf, request.params.id];
 
-  client.query(SQL,safeValues)
-    .then(data =>{
+  client.query(SQL, safeValues)
+    .then(data => {
       console.log(data.rowCount);
       viewDetails(request, response);
-    }).catch(err=>{
+    }).catch(err => {
       console.error(err);
     });
 
@@ -95,7 +95,7 @@ function addBooktoData(request, response) {
   const safeVal = [obj.title, obj.author, obj.description, obj.isbn, obj.image, obj.bookshelf];
   client.query(SQL, safeVal)
     .then(() => {
-      response.status(200).render('pages/books/show', { book: obj });
+      response.status(200).render('pages/books/show', { book: obj, flag:'details' });
     });
 }
 
@@ -121,7 +121,7 @@ function bookSearch(request, response) {
       let arr = returned.map((bookResults) => {
         return new Book(bookResults);
       });
-      response.status(200).render('pages/searches/show', { results: arr,flag:'search' });
+      response.status(200).render('pages/searches/show', { results: arr, flag: 'search' });
     }).catch(error => {
       console.log(error);
     });
@@ -136,7 +136,7 @@ function viewDetails(request, response) {
 
   client.query(SQL, safeParam)
     .then(results => {
-      response.status(200).render('pages/books/show', { book: results.rows[0],flag:'details'});
+      response.status(200).render('pages/books/show', { book: results.rows[0], flag: 'details' });
     });
 }
 // error handler

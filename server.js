@@ -90,7 +90,7 @@ function newSearch(request, response) {
 function addBooktoData(request, response) {
   const obj = request.body;
 
-  let SQL = 'INSERT INTO books (title,author,description,isbn,image,bookshelf) VALUES ($1,$2,$3,$4,$5,$6)';
+  const SQL = 'INSERT INTO books (title,author,description,isbn,image,bookshelf) VALUES ($1,$2,$3,$4,$5,$6)';
 
   const safeVal = [obj.title, obj.author, obj.description, obj.isbn, obj.image, obj.bookshelf];
   client.query(SQL, safeVal)

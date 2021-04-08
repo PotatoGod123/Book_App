@@ -1,5 +1,5 @@
 'use strict';
-//not sure why not working on host site???
+//not sure why not working on host site
 // bring in our dependencies
 const express = require('express');
 const superagent = require('superagent');
@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 3000;
 
 // start express application
 const app = express();
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 const client = new pg.Client(process.env.DATABASE_URL);
 // CORS
 client.connect();

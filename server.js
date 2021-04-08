@@ -52,6 +52,8 @@ function home(request, response) {
   client.query(SQL)
     .then(results => {
       response.status(200).render('pages/index', { 'books': results });
+    }).catch(err=>{
+      console.log(err);
     });
 
 }
@@ -64,6 +66,8 @@ function deleteBook(request, response) {
     .then(data => {
       console.log(data.rowCount);
       response.status(200).redirect('/');
+    }).catch(err=>{
+      console.log(err);
     });
 }
 
@@ -96,6 +100,8 @@ function addBooktoData(request, response) {
   client.query(SQL, safeVal)
     .then(() => {
       response.status(200).render('pages/books/show', { book: obj, flag:'details' });
+    }).catch(err=>{
+      console.log(err);
     });
 }
 
@@ -137,6 +143,8 @@ function viewDetails(request, response) {
   client.query(SQL, safeParam)
     .then(results => {
       response.status(200).render('pages/books/show', { book: results.rows[0], flag: 'details' });
+    }).catch(err=>{
+      console.log(err);
     });
 }
 // error handler
